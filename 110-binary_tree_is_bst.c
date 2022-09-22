@@ -1,32 +1,57 @@
 #include "binary_trees.h"
-
 /**
- * is_bst - function that traverses down the tree keeping track
- * of the narrowing min and max allowed values
- * @node: pointer to the node of the root to check
- * @min: min value of a node
- * @max: max value of a node
- * -1 and +1 in the last return is for checkin no duplicate value
- * Return: 1 if the binary tree is a BST, 0 otherwise
+ * is_BST - function that checks if a binary tree
+ * is a valid Binary Search Tree.
+ * @tree: pointer to the root node of the tree to check.
+ * @min: the interval left edge, to check data for the
+ * right child subtree.
+ * @max: the interval right edge, to check data for the
+ * left child subtree.
+ * Return: 1 if the tree is validBST, 0 otherwise.
  */
-int is_bst(const binary_tree_t *node, int min, int max)
+int is_BST(const binary_tree_t *tree, int min, int max)
 {
-	if (node == NULL)
+	if (tree == NULL)
+	{
 		return (1);
-	if (node->n < min || node->n > max)
+	}
+	/**
+	 * for the left child subtrees, the interval
+	 *  will always [min , data-1] or not!
+	 * for the right child subtrees, the interval
+	 *  will always [data+1, max] or not!
+	 */
+	if (tree->n < min || tree->n > max)
+	{
 		return (0);
-	return (is_bst(node->left, min, node->n - 1) &&
-		is_bst(node->right, node->n + 1, max));
+		/*if not*/
+	}
+	return (is_BST(tree->left, min, tree->n - 1)
+	&& is_BST(tree->right, tree->n + 1, max));
 }
-
 /**
- * binary_tree_is_bst - function that checks if a binary tree is a valid BST
- * @tree: a pointer to the root node of the tree to check
- * Return: 0 if tree is NULL
+ * binary_tree_is_bst - function that checks if a binary tree
+ * is a valid Binary Search Tree.
+ * @tree: pointer to the root node of the tree to check.
+ * Return: 1 if the tree is validBST, 0 otherwise.
  */
 int binary_tree_is_bst(const binary_tree_t *tree)
 {
+	/**
+	 * Properties of a Binary Search Tree:
+	 * - The left subtree of a node contains only nodes
+	 *   with values less than the node’s value
+	 * - The right subtree of a node contains only nodes with
+	 *   values greater than the node’s value
+	 * - The left and right subtree each must also be a binary search tree
+	 * - There must be no duplicate values
+	 */
+	int INT_MIN = -2147483648, INT_MAX = 2147483647;
+
 	if (tree == NULL)
+	{
 		return (0);
-	return (is_bst(tree, INT_MIN, INT_MAX));
+	}
+
+	return (is_BST(tree, INT_MIN, INT_MAX));
 }
