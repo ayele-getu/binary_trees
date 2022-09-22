@@ -1,55 +1,48 @@
 #include "binary_trees.h"
-/**
- * binary_tree_is_complete - is complete
- * @tree: tree
- * Return: 0 in false 1 in true
- */
-int binary_tree_is_complete(const binary_tree_t *tree)
-{
-	unsigned int i = 0;
-	size_t size;
 
+/**
+ * count_nodes - function that counts the number of nodes in a binary tree
+ * @tree: pointer to the root node of the tree to check
+ * Return: the number of nodes
+ */
+
+int count_nodes(const binary_tree_t *tree)
+{
 	if (tree == NULL)
 		return (0);
-
-	size = binary_tree_size(tree);
-	return (check(tree, i, size));
+	return (1 + count_nodes(tree->left) + count_nodes(tree->right));
 }
-/**
- * check - helper func for binary_tree_is_complete
- * @tree: tree
- * @index: current node
- * @size: size
- * Return: 0 in false 1 in true
- */
-int check(const binary_tree_t *tree, unsigned int index, size_t size)
-{
-	int isComplete = 0;
 
+/**
+ * is_complete - function that checks if a binary tree is complete
+ * @tree: pointer to the root node of the tree to check
+ * @i: index
+ * @count: number of nodes
+ * Return: 1 if true or 0 if false
+ */
+
+int is_complete(const binary_tree_t *tree, unsigned int i, unsigned int count)
+{
 	if (tree == NULL)
 		return (1);
-
-	if (index >= size)
+	if (i >= count)
 		return (0);
-
-	isComplete = check(tree->left, 2 * index + 1, size) &&
-		check(tree->right, 2 * index + 2, size);
-	return (isComplete);
+	return (is_complete(tree->left, 2 * i + 1, count) &&
+		is_complete(tree->right, 2 * i + 2, count));
 }
 
 /**
- * binary_tree_size - measure the size
- * @tree: input
- * Return: size
+ * binary_tree_is_complete - function that checks if a binary tree is complete.
+ * @tree: pointer to the root node of the tree to check
+ * Return: 1 if true  or 0 if false
  */
-size_t binary_tree_size(const binary_tree_t *tree)
+
+int binary_tree_is_complete(const binary_tree_t *tree)
 {
-	int size;
+	int count;
 
 	if (tree == NULL)
 		return (0);
-
-	size = 1 + binary_tree_size(tree->right) + binary_tree_size(tree->left);
-
-	return (size);
+	count = count_nodes(tree);
+	return (is_complete(tree, 0, count));
 }
